@@ -1,0 +1,18 @@
+{
+  "name": "musicon",
+  "version": "1.0.0",
+  "description": "music player",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron main.js"
+  },
+  "dependencies": {
+    "material-design-icons": "^2.2.3",
+    "material-design-lite": "^1.1.3"
+  },
+  "devDependencies": {
+    "electron-prebuilt": "^0.37.0"
+  },
+  "author": "",
+  "license": "ISC"
+}
