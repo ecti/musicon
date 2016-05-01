@@ -1,0 +1,21 @@
+#add {
+	position: absolute;
+	right: 10px;
+	top: 25px;
+}
+
+#player {
+	
+}
+
+#screen {
+	min-height: 500px;
+}
+
+#controls {
+	text-align: center;
+}
+#controls > button {
+	
+	margin: 5px;
+}
