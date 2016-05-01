@@ -1,15 +1,14 @@
-'use strict';
+// App root directory path
+const __root = process.cwd();
 
-const path = require('path');
 const electron = require('electron');
 // Module to control application life.
 const app = electron.app;
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 
-const dialog = electron.dialog;
-
-require('electron-reload')(__dirname, {
+// Module for hot reload
+require('electron-reload')(__root, {
   electron: require('electron-prebuilt')
 });
 
@@ -30,9 +29,9 @@ app.on('ready', function() {
   
   // turn off default menu bar
   mainWindow.setMenu(null);
-
+	
   // and load the index.html of the app.
-  mainWindow.loadURL('file://' + __dirname + '/index.html');
+  mainWindow.loadURL('file://' + __root + '/index.html');
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
@@ -62,9 +61,3 @@ app.on('activate', function () {
     createWindow();
   }
 });
-
-exports.selectDirectory = function() {
-  dialog.showOpenDialog(mainWindow, {
-    properties: ['openDirectory']
-  })
-}
