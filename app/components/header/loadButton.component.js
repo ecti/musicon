@@ -1,7 +1,5 @@
 import React from 'react';
 
-
-
 export default class LoadButton extends React.Component {
 	
 	componentDidMount() {
@@ -20,8 +18,13 @@ export default class LoadButton extends React.Component {
 	
 	loadFolder(event) {
 		event.preventDefault();
-		const nativeMouseEvent = new MouseEvent('click');
-		document.getElementById('open-file-dialog').dispatchEvent(nativeMouseEvent);
+		
+		//const remote = require('remote');
+		const mainProcess = window.require('remote').require('./index.js');
+		mainProcess.selectDirectory();
+		
+		// const nativeMouseEvent = new MouseEvent('click');
+		// document.getElementById('open-file-dialog').dispatchEvent(nativeMouseEvent);
 		//console.dir(document.getElementById('open-file-dialog'));
 		//document.getElementById('open-file-dialog').click();
 	}

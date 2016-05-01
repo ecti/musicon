@@ -1,10 +1,13 @@
 'use strict';
 
+const path = require('path');
 const electron = require('electron');
 // Module to control application life.
 const app = electron.app;
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
+
+const dialog = electron.dialog;
 
 require('electron-reload')(__dirname, {
   electron: require('electron-prebuilt')
@@ -14,9 +17,16 @@ require('electron-reload')(__dirname, {
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
-function createWindow () {
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+app.on('ready', function() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 700, height: 800});
+  mainWindow = new BrowserWindow({
+		width: 700, 
+		height: 800
+		//frame: false,
+		//resizable: false
+	});
   
   // turn off default menu bar
   mainWindow.setMenu(null);
@@ -34,11 +44,7 @@ function createWindow () {
     // when you should delete the corresponding element.
     mainWindow = null;
   });
-}
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-app.on('ready', createWindow);
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
@@ -56,3 +62,9 @@ app.on('activate', function () {
     createWindow();
   }
 });
+
+exports.selectDirectory = function() {
+  dialog.showOpenDialog(mainWindow, {
+    properties: ['openDirectory']
+  })
+}
