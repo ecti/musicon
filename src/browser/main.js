@@ -1,16 +1,10 @@
-// App root directory path
-const __root = process.cwd();
-
 const electron = require('electron');
 // Module to control application life.
 const app = electron.app;
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 
-// Module for hot reload
-require('electron-reload')(__root, {
-  electron: require('electron-prebuilt')
-});
+const client = require('electron-connect').client;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -31,7 +25,7 @@ app.on('ready', function() {
   mainWindow.setMenu(null);
 	
   // and load the index.html of the app.
-  mainWindow.loadURL('file://' + __root + '/index.html');
+  mainWindow.loadURL('file://' + process.cwd() + '/index.html');
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
@@ -43,6 +37,8 @@ app.on('ready', function() {
     // when you should delete the corresponding element.
     mainWindow = null;
   });
+	
+	client.create(mainWindow);
 });
 
 // Quit when all windows are closed.

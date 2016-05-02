@@ -12,7 +12,7 @@ export default class LoadButton extends React.Component {
 		event.preventDefault();
 		
 		
-		const dialog = this.remote.require('./src/app/dialog.js');
+		const dialog = this.remote.require('./dialog');
 		dialog.selectDirectory();
 	}
 	
