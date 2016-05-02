@@ -11,9 +11,9 @@ export default class LoadButton extends React.Component {
 	loadFolder(event) {
 		event.preventDefault();
 		
+		const dialog = this.remote.require('./loadFolder');
 		
-		const dialog = this.remote.require('./dialog');
-		dialog.selectDirectory();
+		dialog.loadFolder();
 	}
 	
 	render() {
