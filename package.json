@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "music player",
   "author": "EricT",
-  "main": "src/browser/main.js",
+  "main": "main.js",
   "scripts": {
     "start": "electron src/browser/main.js",
     "watch": "watchify src/app/app.js -t babelify -o build/bundle.js --debug --verbose"
@@ -20,6 +20,7 @@
     "babelify": "^7.3.0",
     "electron-connect": "^0.3.8",
     "electron-prebuilt": "^0.37.8",
+    "electron-reload": "^0.3.0",
     "gulp": "^3.9.1"
   },
   "license": "ISC"
