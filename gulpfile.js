@@ -13,8 +13,8 @@ gulp.task('serve', function() {
 
  	
   // Restart browser process 
-  gulp.watch('src/browser/main.js', electron.restart);
+  gulp.watch('src/browser/*.js', electron.restart);
 
   // Reload renderer process 
-  gulp.watch(['index.js', 'index.html'], electron.reload);
+  gulp.watch(['src/app/*', 'index.html'], electron.reload);
 });
