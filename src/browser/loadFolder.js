@@ -7,9 +7,11 @@ module.exports.loadFolder = function() {
   const directoryPath = dialog.showOpenDialog({
     properties: ['openDirectory']
   });
-	console.log(directoryPath[0]);
-	const fileContents = fs.readdirSync(directoryPath[0]);
-	console.log(fileContents);
+	
+	if(!directoryPath) 
+		return;
+	
+	return getFilesRecursive(directoryPath[0], '.mp3');
 }
 
 /**
@@ -28,7 +30,7 @@ function getFilesRecursive(folder, ext) {
 			files = files.concat(getFilesRecursive(folder + '/' + fileName, ext));
 		} else {
 			if(fileName.indexOf(ext) > -1) {
-				files.unshift(folder.replace('./public/', '') + '/' + fileName);
+				files.push(fileName);
 			}
 		}
 	});
