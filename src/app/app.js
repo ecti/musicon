@@ -1,10 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+// Libraries
+import './lib/StorageObject';
+
 // Components
-import Header from './components/header/header.component';
+import Header from './components/header.container';
 //import Drawer from './components/header/drawer.component';
-import Main from './components/main.component';
+import Main from './components/main.container';
 
 class App extends React.Component {
 	render() {
@@ -18,4 +21,4 @@ class App extends React.Component {
 	}
 }
 
-ReactDOM.render(<App/>, document.getElementById('content'));
+ReactDOM.render(<App/>, document.getElementById('container'));

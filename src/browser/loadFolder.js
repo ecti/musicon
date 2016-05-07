@@ -30,7 +30,10 @@ function getFilesRecursive(folder, ext) {
 			files = files.concat(getFilesRecursive(folder + '/' + fileName, ext));
 		} else {
 			if(fileName.indexOf(ext) > -1) {
-				files.push(fileName);
+				files.push({
+					fileName: fileName,
+					path: folder + '/' + fileName
+				});
 			}
 		}
 	});

@@ -3,19 +3,19 @@
 	right: 10px;
 	top: 25px;
 }
-
-#player {
-	
+#controller {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 15px;
+	background-color: white;
 }
-
-#screen {
-	min-height: 500px;
-}
-
 #controls {
 	text-align: center;
 }
 #controls > button {
-	
 	margin: 5px;
+}
+#screen {
+	margin-bottom: 80px;
 }

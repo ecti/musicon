@@ -1,0 +1,6 @@
+#controls {
+	text-align: center;
+}
+#controls > button {
+	margin: 5px;
+}

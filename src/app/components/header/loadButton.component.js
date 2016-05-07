@@ -1,5 +1,8 @@
 import React from 'react';
 
+// Libraries
+import {ComponentEvent} from '../../lib/ComponentEvent';
+
 export default class LoadButton extends React.Component {
 	
 	constructor(props) {
@@ -7,19 +10,17 @@ export default class LoadButton extends React.Component {
 		this.loadFolder = this.loadFolder.bind(this);
 		this.remote = window.require('electron').remote;
 	}
-	
-	loadFolder(event) {
-		event.preventDefault();
-		
+
+	loadFolder() {
 		const dialog = this.remote.require('./loadFolder');
-		
 		const playlist = dialog.loadFolder();
-		console.log(playlist);
+		
+		ComponentEvent.emit('Playlist:update', playlist);
 	}
-	
+
 	render() {
 		return (
-			<button className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-shadow--4dp mdl-color--accent" 
+			<button className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored mdl-shadow--4dp mdl-color--accent"
 				id="add" onClick={this.loadFolder}>
 				<i className="material-icons" role="presentation">add</i>
 			</button>
