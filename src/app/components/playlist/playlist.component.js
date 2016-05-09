@@ -10,27 +10,74 @@ export default class Playlist extends React.Component {
 
 	constructor() {
 		super();
-		this.state = { playlist: this.checkLocalPlaylist() };
+		this.state = { 
+			playlist: this.checkLocalPlaylist(),
+			selectedTrack: 0 
+		};
+		this.audioTrack = {
+			index: null,
+			audio: new Audio()
+		};
+		this.highlightTrack = this.highlightTrack.bind(this);
+		this.playSelectedTrack = this.playSelectedTrack.bind(this);
 		this.updatePlaylist = this.updatePlaylist.bind(this);
+		
+		this.play = this.play.bind(this);
+		this.pause = this.pause.bind(this);
+		this.stop = this.stop.bind(this);
+		this.next = this.next.bind(this);
+		this.previous = this.previous.bind(this);
 	}
 
 	componentDidMount() {
 		ComponentEvent.on('Playlist:update', this.updatePlaylist);
+		ComponentEvent.on('Playlist:play', this.play);
+		ComponentEvent.on('Playlist:pause', this.pause);
+		ComponentEvent.on('Playlist:stop', this.stop);
+		ComponentEvent.on('Playlist:next', this.next);
+		ComponentEvent.on('Playlist:previous', this.previous);
 	}
 
 	componentWillUnmount() {
 		ComponentEvent.removeListener('Playlist:update');
+		ComponentEvent.removeListener('Playlist:play');
+		ComponentEvent.removeListener('Playlist:pause');
+		ComponentEvent.removeListener('Playlist:stop');
+		ComponentEvent.removeListener('Playlist:next');
+		ComponentEvent.removeListener('Playlist:previous');
 	}
 	
+	componentWillReceiveProps(nextProps) {
+    console.log('received props update', nextProps);
+  }
+	
+	/**
+	 * Custom methods
+	 */
 	checkLocalPlaylist() {
 		let playlist = [];
-		if(!localStorage.length) {
+		if(localStorage.length === 0) {
 			return playlist;
 		}
 		Object.keys(localStorage).forEach((index) => {
 			playlist.push(localStorage.getObject(index));
 		});
 		return playlist;
+	}
+	
+	highlightTrack(index) {
+		this.setState((states) => {
+			states.selectedTrack = index;
+			return states;
+		});
+	}
+	
+	// Double click to play
+	playSelectedTrack(index, path) {
+		this.audioTrack.index = index;
+		this.audioTrack.audio.src = path;
+		this.audioTrack.audio.load();
+		this.audioTrack.audio.play();
 	}
 
 	updatePlaylist(playlist) {
@@ -44,17 +91,52 @@ export default class Playlist extends React.Component {
 		});
 		this.setState({ playlist: playlist });
 	}
+	
+	// From controller button "play"
+	play() {
+		if(this.state.selectedTrack !== this.audioTrack.index) {
+			const path = this.state.playlist[this.state.selectedTrack].path; 
+			this.audioTrack.audio.src = path;
+			this.audioTrack.audio.load();
+		}
+		
+		this.audioTrack.audio.play();
+	}
+	
+	pause() {
+		if(this.audioTrack.audio) {
+			this.audioTrack.audio.pause();
+		}
+	}
+	
+	stop() {
+		if(this.audioTrack.audio) {
+			this.audioTrack.audio.pause();
+			this.audioTrack.audio.currentTime = 0;
+		}
+	}
+	
+	next() {
+		
+	}
+	
+	previous() {
+		
+	}
 
 	render() {
-		const playlist = this.state.playlist;
 		return (
 			<ul className="mdl-list" id="playlist">
 				{
-					playlist.map((song, index) => {
+					this.state.playlist.map((song, index) => {
 						return <AudioList 
 							key={index} 
+							index={index}
+							isSelected={index === this.state.selectedTrack}
 							songName={song.fileName}
 							songPath={song.path}
+							onClickCallback={this.highlightTrack}
+							onDoubleClickCallback={this.playSelectedTrack}
 						/>
 					})
 				}

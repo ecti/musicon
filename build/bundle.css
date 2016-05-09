@@ -1,13 +1,13 @@
 #add {
 	position: absolute;
-	right: 10px;
+	right: 30px;
 	top: 25px;
 }
 #controller {
 	position: fixed;
 	bottom: 0;
 	left: 0;
-	right: 15px;
+	right: 17px;
 	background-color: white;
 }
 #controls {
@@ -15,6 +15,9 @@
 }
 #controls > button {
 	margin: 5px;
+}
+#playlist {
+	width: 100%;
 }
 #screen {
 	margin-bottom: 80px;

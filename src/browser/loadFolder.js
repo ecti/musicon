@@ -8,8 +8,9 @@ module.exports.loadFolder = function() {
     properties: ['openDirectory']
   });
 	
-	if(!directoryPath) 
+	if(!directoryPath) {
 		return;
+	}
 	
 	return getFilesRecursive(directoryPath[0], '.mp3');
 }

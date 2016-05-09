@@ -14,8 +14,9 @@ export default class LoadButton extends React.Component {
 	loadFolder() {
 		const dialog = this.remote.require('./loadFolder');
 		const playlist = dialog.loadFolder();
-		
-		ComponentEvent.emit('Playlist:update', playlist);
+		if(playlist){
+			ComponentEvent.emit('Playlist:update', playlist);	
+		}
 	}
 
 	render() {
