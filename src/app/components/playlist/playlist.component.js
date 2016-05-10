@@ -27,15 +27,20 @@ export default class Playlist extends React.Component {
 		this.stop = this.stop.bind(this);
 		this.next = this.next.bind(this);
 		this.previous = this.previous.bind(this);
+		
+		this.changeVolume = this.changeVolume.bind(this);
 	}
 
 	componentDidMount() {
 		ComponentEvent.on('Playlist:update', this.updatePlaylist);
+		
 		ComponentEvent.on('Playlist:play', this.play);
 		ComponentEvent.on('Playlist:pause', this.pause);
 		ComponentEvent.on('Playlist:stop', this.stop);
 		ComponentEvent.on('Playlist:next', this.next);
 		ComponentEvent.on('Playlist:previous', this.previous);
+		
+		ComponentEvent.on('Playlist:changeVolume', this.changeVolume);
 	}
 
 	componentWillUnmount() {
@@ -45,11 +50,9 @@ export default class Playlist extends React.Component {
 		ComponentEvent.removeListener('Playlist:stop');
 		ComponentEvent.removeListener('Playlist:next');
 		ComponentEvent.removeListener('Playlist:previous');
+		
+		ComponentEvent.removeListener('Playlist:changeVolume');
 	}
-	
-	componentWillReceiveProps(nextProps) {
-    console.log('received props update', nextProps);
-  }
 	
 	/**
 	 * Custom methods
@@ -122,6 +125,12 @@ export default class Playlist extends React.Component {
 	
 	previous() {
 		
+	}
+	
+	changeVolume(volume) {
+		if(this.audioTrack.audio) {
+			this.audioTrack.audio.volume = volume;
+		}
 	}
 
 	render() {

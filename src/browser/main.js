@@ -14,9 +14,9 @@ app.on('ready', function() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
 		width: 700, 
-		height: 800
+		height: 800,
 		//frame: false,
-		//resizable: false
+		resizable: false
 	});
   
   // turn off default menu bar
