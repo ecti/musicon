@@ -77,9 +77,11 @@ export default class Playlist extends React.Component {
 	
 	// Double click to play
 	playSelectedTrack(index, path) {
+		const fileName = this.state.playlist[index].fileName;
 		this.audioTrack.index = index;
 		this.audioTrack.audio.src = path;
 		this.audioTrack.audio.load();
+		ComponentEvent.emit('Display:updateTitle', fileName);
 		this.audioTrack.audio.play();
 	}
 
@@ -98,9 +100,11 @@ export default class Playlist extends React.Component {
 	// From controller button "play"
 	play() {
 		if(this.state.selectedTrack !== this.audioTrack.index) {
-			const path = this.state.playlist[this.state.selectedTrack].path; 
+			const fileName = this.state.playlist[this.state.selectedTrack].fileName;
+			const path = this.state.playlist[this.state.selectedTrack].path;
 			this.audioTrack.audio.src = path;
 			this.audioTrack.audio.load();
+			ComponentEvent.emit('Display:updateTitle', fileName);
 		}
 		
 		this.audioTrack.audio.play();
