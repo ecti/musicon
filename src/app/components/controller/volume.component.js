@@ -12,7 +12,14 @@ export default class Volume extends React.Component {
 	render() {
 		return(
 			<div className="mdl-cell mdl-cell--2-col mdl-cell--1-col-phone">
-				<input className="mdl-slider mdl-js-slider" onChange={this.changeVolume} type="range" min="0" max="100" defaultValue="100" tabindex="0"/>
+				<input 
+					className="mdl-slider mdl-js-slider" 
+					onChange={this.changeVolume} 
+					type="range" 
+					min="0" 
+					max="100" 
+					defaultValue="100"
+				/>
 			</div>
 		);
 	}

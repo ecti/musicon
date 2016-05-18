@@ -45,6 +45,7 @@ export default class Playlist extends React.Component {
 
 	componentWillUnmount() {
 		ComponentEvent.removeListener('Playlist:update');
+		
 		ComponentEvent.removeListener('Playlist:play');
 		ComponentEvent.removeListener('Playlist:pause');
 		ComponentEvent.removeListener('Playlist:stop');
@@ -76,13 +77,36 @@ export default class Playlist extends React.Component {
 	}
 	
 	// Double click to play
+	// TODO: refactor
 	playSelectedTrack(index, path) {
 		const fileName = this.state.playlist[index].fileName;
+		
 		this.audioTrack.index = index;
 		this.audioTrack.audio.src = path;
 		this.audioTrack.audio.load();
+		
+		// Set audio's end duration
+		this.audioTrack.audio.onloadedmetadata = function() {
+			//this.audioTrack.duration = this.audioTrack.audio.duration;
+			ComponentEvent.emit('Progress:setAudioDuration', this.audioTrack.audio.duration);
+		}.bind(this);
+		
+		// Update progress time
+		this.audioTrack.audio.ontimeupdate = function() {
+			ComponentEvent.emit('Progress:updateTime', this.audioTrack.audio.currentTime);
+		}.bind(this);
+		
 		ComponentEvent.emit('Display:updateTitle', fileName);
 		this.audioTrack.audio.play();
+		
+	}
+	
+	restartPlay() {
+		
+	}
+	
+	continuePlay() {
+		
 	}
 
 	updatePlaylist(playlist) {
@@ -98,10 +122,12 @@ export default class Playlist extends React.Component {
 	}
 	
 	// From controller button "play"
+	// TODO: refactor
 	play() {
 		if(this.state.selectedTrack !== this.audioTrack.index) {
 			const fileName = this.state.playlist[this.state.selectedTrack].fileName;
 			const path = this.state.playlist[this.state.selectedTrack].path;
+			this.audioTrack.index = this.state.selectedTrack;
 			this.audioTrack.audio.src = path;
 			this.audioTrack.audio.load();
 			ComponentEvent.emit('Display:updateTitle', fileName);
@@ -123,12 +149,38 @@ export default class Playlist extends React.Component {
 		}
 	}
 	
+	// TODO: refactor
 	next() {
-		
+		if(typeof this.audioTrack.index === 'number') {
+			this.audioTrack.index += 1;
+			if(this.audioTrack.index > this.state.playlist.length) {
+				this.audioTrack.index = 0;
+			}
+			
+			const fileName = this.state.playlist[this.audioTrack.index].fileName;
+			const path = this.state.playlist[this.audioTrack.index].path;
+			this.audioTrack.audio.src = path;
+			this.audioTrack.audio.load();
+			ComponentEvent.emit('Display:updateTitle', fileName);
+			this.audioTrack.audio.play();
+		}
 	}
 	
+	// TODO: refactor
 	previous() {
-		
+		if(typeof this.audioTrack.index === 'number') {
+			this.audioTrack.index -= 1;
+			if(this.audioTrack.index < 0) {
+				this.audioTrack.index = this.state.playlist.length;
+			}
+			
+			const fileName = this.state.playlist[this.audioTrack.index].fileName;
+			const path = this.state.playlist[this.audioTrack.index].path;
+			this.audioTrack.audio.src = path;
+			this.audioTrack.audio.load();
+			ComponentEvent.emit('Display:updateTitle', fileName);
+			this.audioTrack.audio.play();
+		}
 	}
 	
 	changeVolume(volume) {
