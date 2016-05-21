@@ -34,7 +34,8 @@ export default class Playlist extends React.Component {
 	componentDidMount() {
 		ComponentEvent.on('Playlist:update', this.updatePlaylist);
 		
-		ComponentEvent.on('Playlist:play', this.play);
+		// TODO: update play_old
+		ComponentEvent.on('Playlist:play', this.playSelectedTrack);
 		ComponentEvent.on('Playlist:pause', this.pause);
 		ComponentEvent.on('Playlist:stop', this.stop);
 		ComponentEvent.on('Playlist:next', this.next);
@@ -76,37 +77,19 @@ export default class Playlist extends React.Component {
 		});
 	}
 	
-	// Double click to play
-	// TODO: refactor
+	// Double click to play or play button from controller
 	playSelectedTrack(index, path) {
-		const fileName = this.state.playlist[index].fileName;
+		index = index || this.state.selectedTrack;
+		path = path || this.state.playlist[index].path;
 		
-		this.audioTrack.index = index;
-		this.audioTrack.audio.src = path;
-		this.audioTrack.audio.load();
+		// Load new song
+		if(this.state.selectedTrack !== this.audioTrack.index) {
+			this.audioTrack.index = index;
+			this.audioTrack.audio.src = path;
+			this.audioTrack.audio.load();
+		}
 		
-		// Set audio's end duration
-		this.audioTrack.audio.onloadedmetadata = function() {
-			//this.audioTrack.duration = this.audioTrack.audio.duration;
-			ComponentEvent.emit('Progress:setAudioDuration', this.audioTrack.audio.duration);
-		}.bind(this);
-		
-		// Update progress time
-		this.audioTrack.audio.ontimeupdate = function() {
-			ComponentEvent.emit('Progress:updateTime', this.audioTrack.audio.currentTime);
-		}.bind(this);
-		
-		ComponentEvent.emit('Display:updateTitle', fileName);
-		this.audioTrack.audio.play();
-		
-	}
-	
-	restartPlay() {
-		
-	}
-	
-	continuePlay() {
-		
+		this.play();
 	}
 
 	updatePlaylist(playlist) {
@@ -118,21 +101,31 @@ export default class Playlist extends React.Component {
 		playlist.forEach((song, i) => {
 			localStorage.setObject(i, song);
 		});
-		this.setState({ playlist: playlist });
+		
+		this.setState((states) => {
+			states.playlist = playlist;
+			return states;
+		});
 	}
 	
-	// From controller button "play"
-	// TODO: refactor
 	play() {
-		if(this.state.selectedTrack !== this.audioTrack.index) {
-			const fileName = this.state.playlist[this.state.selectedTrack].fileName;
-			const path = this.state.playlist[this.state.selectedTrack].path;
-			this.audioTrack.index = this.state.selectedTrack;
-			this.audioTrack.audio.src = path;
-			this.audioTrack.audio.load();
-			ComponentEvent.emit('Display:updateTitle', fileName);
-		}
+		const index = this.audioTrack.index;
+		const fileName = this.state.playlist[index].fileName;
 		
+		// Set audio's end duration
+		this.audioTrack.audio.onloadedmetadata = function() {
+			ComponentEvent.emit('Progress:setAudioDuration', this.audioTrack.audio.duration);
+		}.bind(this);
+		
+		// Update progress time
+		this.audioTrack.audio.ontimeupdate = function() {
+			ComponentEvent.emit('Progress:updateTime', this.audioTrack.audio.currentTime);
+		}.bind(this);
+		
+		// Play next track on audio completea
+		
+		// Update audio title
+		ComponentEvent.emit('Display:updateTitle', fileName);
 		this.audioTrack.audio.play();
 	}
 	
@@ -157,12 +150,12 @@ export default class Playlist extends React.Component {
 				this.audioTrack.index = 0;
 			}
 			
-			const fileName = this.state.playlist[this.audioTrack.index].fileName;
-			const path = this.state.playlist[this.audioTrack.index].path;
-			this.audioTrack.audio.src = path;
-			this.audioTrack.audio.load();
-			ComponentEvent.emit('Display:updateTitle', fileName);
-			this.audioTrack.audio.play();
+			// const fileName = this.state.playlist[this.audioTrack.index].fileName;
+			// const path = this.state.playlist[this.audioTrack.index].path;
+			// this.audioTrack.audio.src = path;
+			// this.audioTrack.audio.load();
+			// ComponentEvent.emit('Display:updateTitle', fileName);
+			// this.audioTrack.audio.play();
 		}
 	}
 	
