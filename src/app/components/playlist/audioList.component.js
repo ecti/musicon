@@ -10,7 +10,7 @@ export default class AudioList extends React.Component {
 		return (
 			<li className="mdl-list__item" 
 				onClick={(event) => {this.props.onClickCallback(this.props.index)}} 
-				onDoubleClick={() => {this.props.onDoubleClickCallback(this.props.index, this.props.songPath)}}
+				onDoubleClick={() => {this.props.onDoubleClickCallback(this.props.index)}}
 				style={this.props.isSelected ? {backgroundColor: 'rgba(3, 169, 244, 0.5)'} : {backgroundColor: 'initial'}}
 			>
 				<span className="mdl-list__item-primary-content">

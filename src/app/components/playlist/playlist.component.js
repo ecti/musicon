@@ -15,8 +15,8 @@ export default class Playlist extends React.Component {
 			selectedTrack: 0 
 		};
 		this.audioTrack = {
-			index: null,
-			audio: new Audio()
+			index: 0,
+			audio: new Audio(this.state.playlist[0].path)
 		};
 		this.highlightTrack = this.highlightTrack.bind(this);
 		this.playSelectedTrack = this.playSelectedTrack.bind(this);
@@ -34,7 +34,6 @@ export default class Playlist extends React.Component {
 	componentDidMount() {
 		ComponentEvent.on('Playlist:update', this.updatePlaylist);
 		
-		// TODO: update play_old
 		ComponentEvent.on('Playlist:play', this.playSelectedTrack);
 		ComponentEvent.on('Playlist:pause', this.pause);
 		ComponentEvent.on('Playlist:stop', this.stop);
@@ -77,10 +76,9 @@ export default class Playlist extends React.Component {
 		});
 	}
 	
-	// Double click to play or play button from controller
-	playSelectedTrack(index, path) {
+	playSelectedTrack(index) {
 		index = index || this.state.selectedTrack;
-		path = path || this.state.playlist[index].path;
+		const path = this.state.playlist[index].path;
 		
 		// Load new song
 		if(this.state.selectedTrack !== this.audioTrack.index) {
@@ -122,7 +120,7 @@ export default class Playlist extends React.Component {
 			ComponentEvent.emit('Progress:updateTime', this.audioTrack.audio.currentTime);
 		}.bind(this);
 		
-		// Play next track on audio completea
+		// Play next track on audio complete
 		
 		// Update audio title
 		ComponentEvent.emit('Display:updateTitle', fileName);
@@ -130,56 +128,50 @@ export default class Playlist extends React.Component {
 	}
 	
 	pause() {
-		if(this.audioTrack.audio) {
-			this.audioTrack.audio.pause();
-		}
+		this.audioTrack.audio.pause();
 	}
 	
 	stop() {
-		if(this.audioTrack.audio) {
-			this.audioTrack.audio.pause();
-			this.audioTrack.audio.currentTime = 0;
-		}
+		this.audioTrack.audio.pause();
+		this.audioTrack.audio.currentTime = 0;
 	}
 	
-	// TODO: refactor
 	next() {
-		if(typeof this.audioTrack.index === 'number') {
-			this.audioTrack.index += 1;
-			if(this.audioTrack.index > this.state.playlist.length) {
-				this.audioTrack.index = 0;
-			}
-			
-			// const fileName = this.state.playlist[this.audioTrack.index].fileName;
-			// const path = this.state.playlist[this.audioTrack.index].path;
-			// this.audioTrack.audio.src = path;
-			// this.audioTrack.audio.load();
-			// ComponentEvent.emit('Display:updateTitle', fileName);
-			// this.audioTrack.audio.play();
+		// Increment by one audio track
+		this.audioTrack.index += 1;
+		if(this.audioTrack.index > this.state.playlist.length) {
+			this.audioTrack.index = 0;
 		}
+		
+		const index = this.audioTrack.index;
+		this.playSelectedTrack(index);
+		
+		// Update selectedTrack on playlist
+		this.setState((states) => {
+			states.selectedTrack = index;
+			return states;
+		});
 	}
 	
-	// TODO: refactor
 	previous() {
-		if(typeof this.audioTrack.index === 'number') {
-			this.audioTrack.index -= 1;
-			if(this.audioTrack.index < 0) {
-				this.audioTrack.index = this.state.playlist.length;
-			}
-			
-			const fileName = this.state.playlist[this.audioTrack.index].fileName;
-			const path = this.state.playlist[this.audioTrack.index].path;
-			this.audioTrack.audio.src = path;
-			this.audioTrack.audio.load();
-			ComponentEvent.emit('Display:updateTitle', fileName);
-			this.audioTrack.audio.play();
+		// Decrement by one audio track
+		this.audioTrack.index -= 1;
+		if(this.audioTrack.index < 0) {
+			this.audioTrack.index = this.state.playlist.length - 1; // index starts from 0
 		}
+		
+		const index = this.audioTrack.index;
+		this.playSelectedTrack(index);
+		
+		// Update selectedTrack on playlist
+		this.setState((states) => {
+			states.selectedTrack = index;
+			return states;
+		});
 	}
 	
 	changeVolume(volume) {
-		if(this.audioTrack.audio) {
-			this.audioTrack.audio.volume = volume;
-		}
+		this.audioTrack.audio.volume = volume;
 	}
 
 	render() {
@@ -192,7 +184,6 @@ export default class Playlist extends React.Component {
 							index={index}
 							isSelected={index === this.state.selectedTrack}
 							songName={song.fileName}
-							songPath={song.path}
 							onClickCallback={this.highlightTrack}
 							onDoubleClickCallback={this.playSelectedTrack}
 						/>
