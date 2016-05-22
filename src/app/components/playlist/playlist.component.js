@@ -29,6 +29,7 @@ export default class Playlist extends React.Component {
 		this.previous = this.previous.bind(this);
 		
 		this.changeVolume = this.changeVolume.bind(this);
+		this.seekTime = this.seekTime.bind(this);
 	}
 
 	componentDidMount() {
@@ -41,6 +42,7 @@ export default class Playlist extends React.Component {
 		ComponentEvent.on('Playlist:previous', this.previous);
 		
 		ComponentEvent.on('Playlist:changeVolume', this.changeVolume);
+		ComponentEvent.on('Playlist:seekTime', this.seekTime);
 	}
 
 	componentWillUnmount() {
@@ -53,6 +55,7 @@ export default class Playlist extends React.Component {
 		ComponentEvent.removeListener('Playlist:previous');
 		
 		ComponentEvent.removeListener('Playlist:changeVolume');
+		ComponentEvent.removeListener('Playlist:seekTime');
 	}
 	
 	/**
@@ -121,6 +124,12 @@ export default class Playlist extends React.Component {
 		}.bind(this);
 		
 		// Play next track on audio complete
+		this.audioTrack.audio.onended = function() {
+			this.next();
+		}.bind(this);
+		
+		// Audio seek
+		//this.audioTrack.audio
 		
 		// Update audio title
 		ComponentEvent.emit('Display:updateTitle', fileName);
@@ -172,6 +181,10 @@ export default class Playlist extends React.Component {
 	
 	changeVolume(volume) {
 		this.audioTrack.audio.volume = volume;
+	}
+	
+	seekTime(time) {
+		this.audioTrack.audio.currentTime = time;
 	}
 
 	render() {

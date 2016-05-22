@@ -10,7 +10,7 @@ export default class Progress extends React.Component {
 		this.state = {
 			durationTime: 100
 		};
-		this.changeValue = this.changeValue.bind(this);
+		this.seekTime = this.seekTime.bind(this);
 		this.setAudioDuration = this.setAudioDuration.bind(this);
 		this.updateTime = this.updateTime.bind(this);
 	}
@@ -18,11 +18,15 @@ export default class Progress extends React.Component {
 	componentDidMount() {
 		ComponentEvent.on('Progress:setAudioDuration', this.setAudioDuration);
 		ComponentEvent.on('Progress:updateTime', this.updateTime);
+		
+		this.refs.progressBar.addEventListener('change', this.seekTime);
 	}
 
 	componentWillUnmount() {
 		ComponentEvent.removeListener('Progress:setAudioDuration');
 		ComponentEvent.removeListener('Progress:updateTime');
+		
+		this.refs.progressBar.removeEventListener('change');
 	}
 	
 	setAudioDuration(time) {
@@ -36,10 +40,8 @@ export default class Progress extends React.Component {
 		this.refs.progressBar.MaterialSlider.change(time);
 	}
 	
-	changeValue(event) {
-		//this.setState({value: event.target.value});
-		// console.log(event.target.value);
-		// this.setState({value: event.target.value});
+	seekTime(event) {
+		ComponentEvent.emit('Playlist:seekTime', event.target.value);
 	}
 	
 	render() {
@@ -51,7 +53,7 @@ export default class Progress extends React.Component {
 					min="0" 
 					max={this.state.durationTime}
 					defaultValue="0"
-					onChange={this.changeValue}
+					
 					ref="progressBar"
 				/>
 			</div>
