@@ -76,8 +76,8 @@ export default class Playlist extends React.Component {
 		});
 	}
 	
-	playSelectedTrack(index) {
-		index = index || this.state.selectedTrack;
+	playSelectedTrack(index) {		
+		index = (typeof index !== 'undefined') ? index : this.state.selectedTrack;
 		const path = this.state.playlist[index].path;
 		
 		// Load new song
@@ -139,7 +139,7 @@ export default class Playlist extends React.Component {
 	next() {
 		// Increment by one audio track
 		this.audioTrack.index += 1;
-		if(this.audioTrack.index > this.state.playlist.length) {
+		if(this.audioTrack.index > (this.state.playlist.length - 1)) {
 			this.audioTrack.index = 0;
 		}
 		
